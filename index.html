@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- mobile status bar color -->
+    <meta name="theme-color" content="#fff">
+    <title>Generate Puzzles</title>
+    <link rel="icon" href="./static/images/logo.svg" type="image/x-icon">
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One&display=swap" rel="stylesheet">
+    <!-- box icons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- app css -->
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="stylesheet" href="/static/css/sudoku.css">
+    <!-- <link rel="stylesheet" href="/static/css/styles.css"> -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PFW99P409P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PFW99P409P');
+    </script>
+
+</head>
+
+<body>
+
+    <!-- top nav -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                Generate Puzzles
+            </a>
+            <div>
+                <ul class="nav-links">
+                    <div class="dark-mode-toggle" id="dark-mode-toggle">
+                        <i class="bx bxs-sun"></i>
+                        <i class="bx bxs-moon"></i>
+                    </div>
+                    
+                    <input type="checkbox" id="checkbox_toggle" />
+                    <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+        
+                    <div class="menu">
+                        <li><a href="wordsearch.html">Word Search</a></li>
+                        <li><a href="crossword.html">Crossword</a></li>
+                        <li><a href="sudoku.html">Sudoku</a></li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- end top nav -->
+
+    <div class="container main">
+        <h1>Create custom puzzles with the help of AI!</h1>
+        <div class="puzzles-container">
+            <div>
+                <a href="wordsearch.html">
+                <img src="/static/images/wordsearch.png" alt="Word Search Puzzle" class="puzzle-img" />
+                <p>Generate Word Search</p>
+                </a>
+            </div>
+            <div>
+                <a href="crossword.html">
+                <img src="/static/images/crossword.png" alt="Crossword Puzzle" class="puzzle-img" />
+                <p>Generate Crossword</p>
+                </a>
+            </div>
+            <div>
+                <a href="sudoku.html">
+                <img src="/static/images/sudoku.png" alt="Sudoku Puzzle" class="puzzle-img" />
+                <p>Generate Sudoku</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="./static/js/app.js"></script>
+</body>
+</html>
