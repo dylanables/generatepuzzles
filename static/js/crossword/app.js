@@ -118,7 +118,7 @@ const get_words_and_clues = async (prompt_req) => {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while generating the recipe. Please try again.');
+        alert('An error occurred while generating the puzzle. Please try again.');
     }
 
     return null;
@@ -139,39 +139,32 @@ const initCrossword = async (prompt) => {
         // generate sudoku puzzle here
         console.log("calling crosswordGen", words_and_clues);
         su = crosswordGen(words_and_clues, grid_size, level);
-        su_answer = [...su.question];
+        su_answer = [...su.original];
     
         seconds = 0;
     
         saveGameInfo();
+
+        console.log("su.original",su.original)
     
         // show grid to div
-        for (let r = 0; r < CONSTANT.GRID_SIZE; r++) {
-            const row = document.createElement("tr");
-            for (let c = 0; c < CONSTANT.GRID_SIZE; c++) {
-                const index = r * CONSTANT.GRID_SIZE + (c);
-                const box = document.createElement("td");
-                box.classList.add("box");
-                //cells[index].setAttribute('data-value', su.question[r][c]);
-                if (su.question[r][c] !== CONSTANT.UNASSIGNED) {
-                    box.classList.add("space");
-                    if (su.question[r][c] !== "*") {
-                        const num_span = document.createElement("span");
-                        num_span.classList.add("number");
-                        num_span.innerHTML = su.question[r][c]
-                        box.appendChild(num_span);
-                        cells[index].appendChild(num_span);
-                    }
-                    const letter = document.createElement("span");
-                    letter.classList.add("letter");
-                    box.appendChild(letter);
-    
-                    cells[index].classList.add('filled');
+        for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
+            let row = Math.floor(i / CONSTANT.GRID_SIZE);
+            let col = i % CONSTANT.GRID_SIZE;
+            const input = su.original[row][col].input
+            console.log({row,col,input})
+            //cells[i].setAttribute('data-value', su.question[r][c]);
+            if (su.original[row][col].input !== CONSTANT.UNASSIGNED) {
+                console.log("*letter", su.original[row][col].num);
+
+                if (parseInt(su.original[row][col].num) !== 0) {
+                    const num_span = document.createElement("span");
+                    num_span.classList.add("number");
+                    num_span.innerHTML = su.original[row][col].num;
+                    cells[i].appendChild(num_span);
                 }
-                row.appendChild(box);
+                cells[i].classList.add('filled');
             }
-            document.getElementById("unsolved").appendChild(row);
-            document.getElementById("solved").appendChild(row);
         }
     
         // show words to div
@@ -210,7 +203,7 @@ const loadCrossword = () => {
 
     su = game.su;
 
-    su_answer = [...su.question];
+    su_answer = [...su.original];
     //su_answer = su.answer;
 
     seconds = game.seconds;
@@ -231,32 +224,23 @@ const loadCrossword = () => {
     //}
 
     // show grid to div
-    for (let r = 0; r < CONSTANT.GRID_SIZE; r++) {
-        const row = document.createElement("tr");
-        for (let c = 0; c < CONSTANT.GRID_SIZE; c++) {
-            const index = r * CONSTANT.GRID_SIZE + (c);
-            const box = document.createElement("td");
-            box.classList.add("box");
-            //cells[index].setAttribute('data-value', su.question[r][c]);
-            if (su.question[r][c] !== CONSTANT.UNASSIGNED) {
-                box.classList.add("space");
-                if (su.question[r][c] !== "*") {
-                    const num_span = document.createElement("span");
-                    num_span.classList.add("number");
-                    num_span.innerHTML = su.question[r][c]
-                    box.appendChild(num_span);
-                    cells[index].appendChild(num_span);
-                }
-                const letter = document.createElement("span");
-                letter.classList.add("letter");
-                box.appendChild(letter);
+    for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
+        let row = Math.floor(i / CONSTANT.GRID_SIZE);
+        let col = i % CONSTANT.GRID_SIZE;
 
-                cells[index].classList.add('filled');
+        //cells[i].setAttribute('data-value', su.question[r][c]);
+        if (su_answer[row][col].input !== CONSTANT.UNASSIGNED) {
+            if (parseInt(su_answer[row][col].num) !== 0) {
+                const num_span = document.createElement("span");
+                num_span.classList.add("number");
+                num_span.innerHTML = su_answer[row][col].num;
+                cells[i].appendChild(num_span);
             }
-            row.appendChild(box);
+            cells[i].classList.add('filled');
+            if (su_answer[row][col].input && su_answer[row][col].input !== '*' && su_answer[row][col].input !== '') {
+                cells[i].innerHTML = su_answer[row][col].input;
+            }
         }
-        document.getElementById("unsolved").appendChild(row);
-        document.getElementById("solved").appendChild(row);
     }
 
     // show words to div
@@ -292,7 +276,7 @@ const saveGameInfo = () => {
         level: level_index,
         seconds: seconds,
         su: {
-            original: su.original,
+            original: su_answer,
             question: su.question,
             answer: su_answer,
             words: su.words,
@@ -523,8 +507,10 @@ const hoverWordOnCellClick = (clickCount) => {
 }
 
 const initClueClickEvent = () => {
+    console.log("words_cell", words_cell)
     words_cell.forEach((e) => {
         e.addEventListener("click", (event, i) => {
+            console.log("word clicked")
             words_cell.forEach(e => e.classList.remove('selected'));
             cells.forEach(e => e.classList.remove('selected'));
             cells.forEach(e => e.classList.remove('hover'));
@@ -569,7 +555,7 @@ const initKeyPressEvent = () => {
                     // add to answer
                     let row = Math.floor(selected_cell / CONSTANT.GRID_SIZE);
                     let col = selected_cell % CONSTANT.GRID_SIZE;
-                    su_answer[row][col] = keyPressed;
+                    su_answer[row][col].input = keyPressed;
                     // save game
                     saveGameInfo()
                     // -----
@@ -629,7 +615,8 @@ const initKeyPressEvent = () => {
                         let row = Math.floor(selected_cell / CONSTANT.GRID_SIZE);
                         let col = selected_cell % CONSTANT.GRID_SIZE;
     
-                        su_answer[row][col] = 0;
+                        su_answer[row][col].input = '*';
+                        saveGameInfo();
     
                         removeErr();
                     }
@@ -800,8 +787,7 @@ document.querySelector('#btn-play').addEventListener('click', () => {
 document.querySelector('#btn-start').addEventListener('click', () => {
     settings_screen.classList.remove('active');
     const prompt = document.querySelector('#prompt').value;
-    initCrossword(prompt);
-    startGame();
+    initCrossword(prompt).then(() => startGame());
 });
 
 document.querySelector('#btn-continue').addEventListener('click', () => {

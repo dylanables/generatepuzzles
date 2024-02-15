@@ -114,7 +114,7 @@ const get_words = async (prompt_req) => {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while generating the recipe. Please try again.');
+        alert('An error occurred while generating the puzzle. Please try again.');
     }
 
     return null;
@@ -165,6 +165,7 @@ const initWordsearch = async (prompt) => {
         }
     } else {
         // handle case where response is null or there was an error
+        alert('An error occurred while generating the puzzle. Please try again.');
     }
 }
 
@@ -181,6 +182,8 @@ const loadWordsearch = () => {
     su = game.su;
 
     su_answer = su.answer;
+
+    found = su.found;
 
     seconds = game.seconds;
     game_time.innerHTML = showTime(seconds);
@@ -202,8 +205,20 @@ const loadWordsearch = () => {
 
     // show words to div
     for (let w = 0; w < su.words.length; w++) {
-        words_list.innerHTML += "<div class='word' data-word='"+su.words[w]+"'>"+su.words[w]+"</div>";
+        words_list.innerHTML += "<div class='word' id='"+su.words[w]+"'>"+su.words[w]+"</div>";
     }
+
+    // select found words
+    found.forEach((e) => {
+        e.coords.forEach((coord) => {
+            var i = findIndex(coord.row, coord.col);
+            cells[i].classList.add('found');
+        });
+
+        // strikethrough found words
+        document.getElementById(e.word).classList.add('cross-out');
+    });
+
 }
 
 const resetBg = () => {
@@ -220,6 +235,7 @@ const saveGameInfo = () => {
             original: su.original,
             question: su.question,
             answer: su_answer,
+            found: found,
             words: su.words,
         }
     }
@@ -352,9 +368,10 @@ const checkSelection = () => {
     console.log(word)
     if (!word) return;
 
-    if (su.words.indexOf(word) > -1 && !found.includes(word)) {
+    if (su.words.indexOf(word) > -1 && !found.find(e => e.word === word)) {
         // word found
-        found.push(word);
+        let coords = hSelection() || vSelection() || dSelection();
+        found.push({'word': word, 'coords': coords});
         // fill in grid
         currSelection.forEach((e) => {
             var i = findIndex(e.row, e.col);
@@ -366,6 +383,8 @@ const checkSelection = () => {
         if (found.length === su.words.length) {
             removeGameInfo();
             showResult();
+        } else {
+            saveGameInfo();
         }
     }
 
@@ -593,8 +612,7 @@ document.querySelector('#btn-play').addEventListener('click', () => {
 document.querySelector('#btn-start').addEventListener('click', () => {
     settings_screen.classList.remove('active');
     const prompt = document.querySelector('#prompt').value;
-    initWordsearch(prompt);
-    startGame();
+    initWordsearch(prompt).then(() => startGame());
 });
 
 document.querySelector('#btn-continue').addEventListener('click', () => {
