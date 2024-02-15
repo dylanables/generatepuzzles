@@ -270,7 +270,7 @@ class Crossword {
         for (let r = 0; r < this.rows; r++) {
             const row_copy = [];
             for (let c = 0; c < this.cols; c++) {
-                row_copy.push({ 'num': 0, 'letter': this.grid[r][c] });
+                row_copy.push({ 'num': 0, 'letter': this.grid[r][c], 'input':  this.grid[r][c] !== '-' ? '*' : '-'});
             }
             copy.push(row_copy);
         }

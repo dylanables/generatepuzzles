@@ -55,7 +55,7 @@ var isToggled = false;
 
 // --------
 
-const getGameInfo = () => JSON.parse(localStorage.getItem('game'));
+const getGameInfo = () => JSON.parse(localStorage.getItem('crossword'));
 
 // ----------------
 
@@ -67,7 +67,7 @@ function removeAllChildNodes(parent) {
     }
 }
 
-function resetSudoku() {
+function resetCrossword() {
     removeAllChildNodes(wordsearch_grid);
     wordsearch_grid.style.gridTemplateColumns = "repeat("+CONSTANT.GRID_SIZE+", auto)";
     for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
@@ -83,7 +83,7 @@ function resetSudoku() {
 }
 
 const get_words_and_clues = async (prompt_req) => {
-    const apiKey = "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";
+    const apiKey = "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";
     console.log(prompt_req)
 
     try {
@@ -126,7 +126,7 @@ const get_words_and_clues = async (prompt_req) => {
 
 const initCrossword = async (prompt) => {
     // clear old sudoku grid and create new
-    resetSudoku();
+    resetCrossword();
     resetBg();
     const grid_size = 15;
     const level = "Easy";
@@ -174,8 +174,6 @@ const initCrossword = async (prompt) => {
             document.getElementById("solved").appendChild(row);
         }
     
-        var across_count = 0;
-        var down_count = 0;
         // show words to div
         for (let w = 0; w < su.words.length; w++) {
             var child = document.createElement("div");
@@ -202,14 +200,18 @@ const initCrossword = async (prompt) => {
     
 }
 
-const loadSudoku = () => {
+const loadCrossword = () => {
+    resetCrossword();
+    resetBg();
+
     let game = getGameInfo();
 
     game_level.innerHTML = CONSTANT.LEVEL_NAME[game.level];
 
     su = game.su;
 
-    su_answer = su.answer;
+    su_answer = [...su.question];
+    //su_answer = su.answer;
 
     seconds = game.seconds;
     game_time.innerHTML = showTime(seconds);
@@ -217,15 +219,44 @@ const loadSudoku = () => {
     level_index = game.level;
 
     // show sudoku to div
-    for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
-        let row = Math.floor(i / CONSTANT.GRID_SIZE);
-        let col = i % CONSTANT.GRID_SIZE;
-        
-        cells[i].setAttribute('data-value', su_answer[row][col]);
-        cells[i].innerHTML = su_answer[row][col] !== 0 ? su_answer[row][col] : '';
-        if (su.question[row][col] !== CONSTANT.UNASSIGNED) {
-            cells[i].classList.add('filled');
+    //for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
+    //    let row = Math.floor(i / CONSTANT.GRID_SIZE);
+    //    let col = i % CONSTANT.GRID_SIZE;
+    //    
+    //    cells[i].setAttribute('data-value', su_answer[row][col]);
+    //    cells[i].innerHTML = su_answer[row][col] !== 0 ? su_answer[row][col] : '';
+    //    if (su.question[row][col] !== CONSTANT.UNASSIGNED) {
+    //        cells[i].classList.add('filled');
+    //    }
+    //}
+
+    // show grid to div
+    for (let r = 0; r < CONSTANT.GRID_SIZE; r++) {
+        const row = document.createElement("tr");
+        for (let c = 0; c < CONSTANT.GRID_SIZE; c++) {
+            const index = r * CONSTANT.GRID_SIZE + (c);
+            const box = document.createElement("td");
+            box.classList.add("box");
+            //cells[index].setAttribute('data-value', su.question[r][c]);
+            if (su.question[r][c] !== CONSTANT.UNASSIGNED) {
+                box.classList.add("space");
+                if (su.question[r][c] !== "*") {
+                    const num_span = document.createElement("span");
+                    num_span.classList.add("number");
+                    num_span.innerHTML = su.question[r][c]
+                    box.appendChild(num_span);
+                    cells[index].appendChild(num_span);
+                }
+                const letter = document.createElement("span");
+                letter.classList.add("letter");
+                box.appendChild(letter);
+
+                cells[index].classList.add('filled');
+            }
+            row.appendChild(box);
         }
+        document.getElementById("unsolved").appendChild(row);
+        document.getElementById("solved").appendChild(row);
     }
 
     // show words to div
@@ -239,7 +270,11 @@ const loadSudoku = () => {
         child.setAttribute('data-vertical',su.words[w].vertical);
         child.setAttribute('tabindex','0');
         child.innerHTML = su.words[w].number + ". " + su.words[w].clue;
-        words_list.append(child);
+        if (parseInt(su.words[w].vertical)) {
+            words_list_down.append(child);
+        } else {
+            words_list_across.append(child);
+        }
         words_cell = document.querySelectorAll('.word');
     }
 
@@ -263,11 +298,11 @@ const saveGameInfo = () => {
             words: su.words,
         }
     }
-    localStorage.setItem('game', JSON.stringify(game));
+    localStorage.setItem('crossword', JSON.stringify(game));
 }
 
 const removeGameInfo = () => {
-    localStorage.removeItem('game');
+    localStorage.removeItem('crossword');
     document.querySelector('#btn-continue').style.display = 'none';
 }
 
@@ -770,7 +805,7 @@ document.querySelector('#btn-start').addEventListener('click', () => {
 });
 
 document.querySelector('#btn-continue').addEventListener('click', () => {
-    loadSudoku();
+    loadCrossword();
     startGame();
 });
 

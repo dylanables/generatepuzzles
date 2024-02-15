@@ -49,7 +49,7 @@ var isToggled = false;
 
 // --------
 
-const getGameInfo = () => JSON.parse(localStorage.getItem('game'));
+const getGameInfo = () => JSON.parse(localStorage.getItem('wordsearch'));
 
 // ----------------
 
@@ -77,7 +77,7 @@ function resetSudoku() {
 }
 
 const get_words = async (prompt_req) => {
-    const apiKey = "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";
+    const apiKey = "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";
     console.log(prompt_req)
 
     try {
@@ -168,7 +168,10 @@ const initWordsearch = async (prompt) => {
     }
 }
 
-const loadSudoku = () => {
+const loadWordsearch = () => {
+    resetSudoku();
+    resetBg();
+
     let game = getGameInfo();
 
     console.log(game)
@@ -184,15 +187,16 @@ const loadSudoku = () => {
 
     level_index = game.level;
 
-    // show sudoku to div
+    // show grid to div
     for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
         let row = Math.floor(i / CONSTANT.GRID_SIZE);
         let col = i % CONSTANT.GRID_SIZE;
-        
-        cells[i].setAttribute('data-value', su_answer[row][col]);
-        cells[i].innerHTML = su_answer[row][col] !== 0 ? su_answer[row][col] : '';
+        console.log({row, col})
+        cells[i].setAttribute('data-value', su.question[row][col]);
+
         if (su.question[row][col] !== CONSTANT.UNASSIGNED) {
             cells[i].classList.add('filled');
+            cells[i].innerHTML = su.question[row][col];
         }
     }
 
@@ -219,11 +223,11 @@ const saveGameInfo = () => {
             words: su.words,
         }
     }
-    localStorage.setItem('game', JSON.stringify(game));
+    localStorage.setItem('wordsearch', JSON.stringify(game));
 }
 
 const removeGameInfo = () => {
-    localStorage.removeItem('game');
+    localStorage.removeItem('wordsearch');
     document.querySelector('#btn-continue').style.display = 'none';
 }
 
@@ -594,7 +598,7 @@ document.querySelector('#btn-start').addEventListener('click', () => {
 });
 
 document.querySelector('#btn-continue').addEventListener('click', () => {
-    loadSudoku();
+    loadWordsearch();
     startGame();
 });
 

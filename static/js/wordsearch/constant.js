@@ -1,6 +1,6 @@
 const CONSTANT = {
     UNASSIGNED: '_',
-    GRID_SIZE: 15,
+    GRID_SIZE: 10,
     NUMBERS: [1,2,3,4,5,6,7,8,9],
     LEVEL_NAME: [
         'Easy',

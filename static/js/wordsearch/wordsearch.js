@@ -256,6 +256,9 @@ const wordsearchGen = (words, level) => {
     let check = wordsearchCreate(grid, words);
     if (check) {
         let question = fillGrid(grid);
+        console.log(grid)
+        console.log(question)
+        console.log(words)
         return {
             original: grid,
             question: question,
