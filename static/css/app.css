@@ -13,7 +13,7 @@
     --nav-size: 70px;
     --sudoku-cell-size: 50px;
 
-    --border-radius: 0px;
+    --border-radius: 10px;
 
     --space-y: 20px;
 
@@ -108,6 +108,7 @@ nav {
     display: flex;
     gap: 1em;
     font-size: 18px;
+    top: var(--nav-size);
 }
 
 .menu li:hover {
@@ -133,11 +134,11 @@ nav {
     user-select: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .menu {
         display:none;
         position: absolute;
-        background-color: var(--white);
+        background-color: var(--bg-body);
         right: 0;
         left: 0;
         text-align: center;
@@ -160,10 +161,17 @@ nav {
     input[type=checkbox]:checked ~ .menu {
         display: block;
     }
+
+    .hamburger-toggle {
+        height: auto;
+        font-size: var(--font-size-xl);
+    }
     
     .hamburger {
         display: block;
         cursor: pointer;
+        margin-top: 0px;
+        padding-top: 0px;
     }
     
     .dropdown {
@@ -174,6 +182,12 @@ nav {
     
     .dropdown li:hover {
         background-color: #353535;
+    }
+}
+
+@media (max-width: 500px) {
+    .nav-logo {
+        font-size: var(--font-size);
     }
 }
 
@@ -191,6 +205,10 @@ nav {
     display: inline-block;
 }
 
+.bx-menu {
+    font-size: var(--font-size-xl);
+}
+
 .dark .bxs-sun {
     display: inline-block;
 }
@@ -203,6 +221,38 @@ nav {
     padding-top: var(--nav-size);
     place-items: center;
     display: grid;
+    color: var(--color-txt);
+}
+
+.container {
+    padding: var(--nav-size) 40px;
+    margin-top: 50px;
+    place-items: center;
+    display: grid;
+    color: var(--color-txt);
+}
+
+.blue-text {
+    color: #00aeef;
+}
+
+.btn {
+    height: 80px;
+    width: 280px;
+    background-color: var(--bg-main);
+    color: var(--color-txt);
+    border-radius: var(--border-radius);
+    display: grid;
+    place-items: center;
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+}
+
+.btn-blue {
+    background-color: var(--blue);
+    color: var(--white);
 }
 
 .puzzles-container {
