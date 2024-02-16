@@ -14,7 +14,7 @@ const newGrid = (size) => {
 
 // check duplicate number in col
 const isColSafe = (grid, col, value) => {
-    for (let row = 0; row < CONSTANT.GRID_SIZE; row++) {
+    for (let row = 0; row < grid.length; row++) {
         if (grid[row][col] === value) return false;
     }
     return true;
@@ -22,7 +22,7 @@ const isColSafe = (grid, col, value) => {
 
 // check duplicate number in row
 const isRowSafe = (grid, row, value) => {
-    for (let col = 0; col < CONSTANT.GRID_SIZE; col++) {
+    for (let col = 0; col < grid.length; col++) {
         if (grid[row][col] === value) return false;
     }
     return true;
@@ -45,8 +45,8 @@ const isSafe = (grid, row, col, value) => {
 
 // find unassigned cell
 const findUnassignedPos = (grid, pos) => {
-    for (let row = 0; row < CONSTANT.GRID_SIZE; row++) {
-        for (let col = 0; col < CONSTANT.GRID_SIZE; col++) {
+    for (let row = 0; row < grid.length; row++) {
+        for (let col = 0; col < grid.length; col++) {
             if (grid[row][col] === CONSTANT.UNASSIGNED) {
                 pos.row = row;
                 pos.col = col;
@@ -77,7 +77,7 @@ function randomChoice(arr) {
     return arr[Math.floor(arr.length * Math.random())];
 }
 
-const wordsearchCreate = (grid, words) => {
+const wordsearchCreate = (grid, size, level, words) => {
 
     console.log("wordsearchCreate", words);
 
@@ -89,8 +89,11 @@ const wordsearchCreate = (grid, words) => {
     if (!findUnassignedPos(grid, unassigned_pos)) return true;
 
     let word_list = shuffleArray(words);
+
     //const orientations = ['leftright', 'rightleft', 'up', 'down', 'rightup', 'rightdown', 'leftup', 'leftdown']
-    const orientations = ['up', 'down']
+    const orientations = level;
+
+    console.log()
 
     let row = unassigned_pos.row;
     let col = unassigned_pos.col;
@@ -141,15 +144,15 @@ const wordsearchCreate = (grid, words) => {
             }
 
             // choosing random starting position for word
-            x_pos = Math.floor(Math.random() * (CONSTANT.GRID_SIZE-1))
-            y_pos = Math.floor(Math.random() * (CONSTANT.GRID_SIZE-1))
+            x_pos = Math.floor(Math.random() * (size-1))
+            y_pos = Math.floor(Math.random() * (size-1))
 
             // determine if word can fit in grid with it's starting position
             let ending_x = x_pos + word_length*step_x;
             let ending_y = y_pos + word_length*step_y;
 
-            if (ending_x < 0 || ending_x >= CONSTANT.GRID_SIZE) continue;
-            if (ending_y < 0 || ending_y >= CONSTANT.GRID_SIZE) continue;
+            if (ending_x < 0 || ending_x >= size) continue;
+            if (ending_y < 0 || ending_y >= size) continue;
 
             let failed = false;
 
@@ -207,41 +210,14 @@ const wordsearchCreate = (grid, words) => {
     return true;
 }
 
-const sudokuCheck = (grid) => {
-    let unassigned_pos = {
-        row: -1,
-        col: -1
-    }
-
-    if (!findUnassignedPos(grid, unassigned_pos)) return true;
-
-    grid.forEach((row, i) => {
-        row.forEach((num, j) => {
-            if (isSafe(grid, i, j, num)) {
-                if (isFullGrid(grid)) {
-                    return true;
-                } else {
-                    if (wordsearchCreate(grid)) {
-                        return true;
-                    }
-                }
-            }
-        })
-    })
-
-    return isFullGrid(grid);
-}
-
-const rand = () => Math.floor(Math.random() * CONSTANT.GRID_SIZE);
-
 const fillGrid = (grid) => {
     let res = [...grid];
     // fill rest of grid with random letters
-    for (let x = 0; x < CONSTANT.GRID_SIZE; x++) {
-        for (let y = 0; y < CONSTANT.GRID_SIZE; y++) {
+    for (let x = 0; x < grid.length; x++) {
+        for (let y = 0; y < grid.length; y++) {
             if (res[x][y] == CONSTANT.UNASSIGNED) {
                 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
-                const randomLetter = alphabet[Math.floor(Math. random() * alphabet.length)];
+                const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
                 res[x][y] = randomLetter;
             }
         }
@@ -250,10 +226,10 @@ const fillGrid = (grid) => {
 }
 
 // generate sudoku based on level
-const wordsearchGen = (words, level) => {
+const wordsearchGen = (words, size, level) => {
     console.log("wordsearchGen called")
-    let grid = newGrid(CONSTANT.GRID_SIZE);
-    let check = wordsearchCreate(grid, words);
+    let grid = newGrid(size);
+    let check = wordsearchCreate(grid, size, level, words);
     if (check) {
         let question = fillGrid(grid);
         console.log(grid)

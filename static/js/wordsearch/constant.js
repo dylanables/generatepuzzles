@@ -2,13 +2,20 @@ const CONSTANT = {
     UNASSIGNED: '_',
     GRID_SIZE: 10,
     NUMBERS: [1,2,3,4,5,6,7,8,9],
+    SIZE_NAME: [
+        'Small',
+        'Medium',
+        'Large'
+    ],
+    SIZE: [10, 15, 20],
     LEVEL_NAME: [
         'Easy',
-        'Medium',
-        'Hard',
-        'Very hard',
-        'Insane',
-        'Inhuman'
+        'Moderate',
+        'Difficult',
     ],
-    LEVEL: [29, 38, 47, 56, 65, 74]
+    LEVEL: [
+        ['leftright', 'up', 'down'], 
+        ['leftright', 'up', 'down', 'rightup', 'rightdown', 'leftup', 'leftdown'], 
+        ['leftright', 'up', 'down', 'rightup', 'rightdown', 'leftup', 'leftdown', 'rightleft']
+    ]
 }

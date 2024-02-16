@@ -15,7 +15,7 @@ const game_screen = document.querySelector('#game-screen');
 const pause_screen = document.querySelector('#pause-screen');
 const result_screen = document.querySelector('#result-screen');
 // ----------
-const wordsearch_grid = document.querySelector('.main-sudoku-grid');
+const wordsearch_grid = document.querySelector('.main-crossword-grid');
 var cells = document.querySelectorAll('.main-grid-cell');
 
 const number_inputs = document.querySelectorAll('.number');
@@ -35,6 +35,7 @@ const words = ['BARKING', 'FETCH', 'TAILWAG'];
 
 let level_index = 0;
 let level = CONSTANT.LEVEL[level_index];
+let numwords = CONSTANT.NUMWORDS[level_index];
 
 let timer = null;
 let pause = false;
@@ -125,18 +126,18 @@ const get_words_and_clues = async (prompt_req) => {
 }
 
 const initCrossword = async (prompt) => {
-    // clear old sudoku grid and create new
+    // clear old grid and create new
     resetCrossword();
     resetBg();
     const grid_size = 15;
-    const level = "Easy";
     // get words and clues
-    const prompt_req = `Provide 10 unique words (no spaces or hyphens) that are less than or equal to ${grid_size} characters in length and are related to ${prompt}. Additionally, provide corresponding clues for each word.`;
+    const prompt_req = `Provide ${numwords} unique words (no spaces or hyphens) that are less than or equal to ${grid_size} characters in length and are related to ${prompt}. Additionally, provide corresponding clues for each word of ${level} difficulty.`;
+    console.log(prompt_req);
     const words_and_clues = await get_words_and_clues(prompt_req);
     if (words_and_clues) {
         console.log("words&clues", words_and_clues);
-        //const words_and_clues = [['Paddle', 'Tool used to hit the pickleball'], ['Pickleball', 'Sport played with a perforated plastic ball'], ['Baseline', 'Back boundary line of the pickleball court'], ['Overhead', 'Type of shot usually hit when the ball is above the head'], ['Dink', 'Soft shot that just clears the net'], ['Kitchen', 'Non-volley zone near the net'], ['Erne', 'Attacking shot hit while jumping near the sideline'], ['Volley', 'Shot made before the ball touches the ground'], ['Poach', 'To intercept the ball hit by the opponent'], ['Dropshot', 'Softly hit shot intended to just make it over the net']];
-        // generate sudoku puzzle here
+        
+        // generate crossword puzzle here
         console.log("calling crosswordGen", words_and_clues);
         su = crosswordGen(words_and_clues, grid_size, level);
         su_answer = [...su.original];
@@ -210,18 +211,6 @@ const loadCrossword = () => {
     game_time.innerHTML = showTime(seconds);
 
     level_index = game.level;
-
-    // show sudoku to div
-    //for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
-    //    let row = Math.floor(i / CONSTANT.GRID_SIZE);
-    //    let col = i % CONSTANT.GRID_SIZE;
-    //    
-    //    cells[i].setAttribute('data-value', su_answer[row][col]);
-    //    cells[i].innerHTML = su_answer[row][col] !== 0 ? su_answer[row][col] : '';
-    //    if (su.question[row][col] !== CONSTANT.UNASSIGNED) {
-    //        cells[i].classList.add('filled');
-    //    }
-    //}
 
     // show grid to div
     for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
@@ -525,11 +514,14 @@ const initClueClickEvent = () => {
             console.log(CONSTANT.GRID_SIZE);
             console.log(index);
 
+            hoverWord(word);
+
             selected_cell = index;
             selected_word = getWordFromCell(index, 1);
+
             cells[selected_cell].classList.remove('err');
             cells[selected_cell].classList.add('selected');
-            hoverWord(word);
+
             e.classList.add('selected');
 
             // -----
@@ -776,6 +768,7 @@ const toggleSolution = () => {
 document.querySelector('#btn-level').addEventListener('click', (e) => {
     level_index = level_index + 1 > CONSTANT.LEVEL.length - 1 ? 0 : level_index + 1;
     level = CONSTANT.LEVEL[level_index];
+    numwords = CONSTANT.NUMWORDS[level_index];
     e.target.innerHTML = CONSTANT.LEVEL_NAME[level_index];
 });
 
@@ -813,9 +806,9 @@ document.querySelector('#btn-new-game-2').addEventListener('click', () => {
     returnStartScreen();
 });
 
-document.querySelector('#toggleSolution').addEventListener('click', () => {
-    toggleSolution();
-});
+//document.querySelector('#toggleSolution').addEventListener('click', () => {
+//    toggleSolution();
+//});
 
 words_cell = document.querySelectorAll('.word');
 console.log("test",words_cell)

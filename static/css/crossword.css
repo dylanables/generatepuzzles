@@ -11,9 +11,9 @@
     --black: #000;
 
     --nav-size: 70px;
-    --sudoku-cell-size: 50px;
+    --crossword-cell-size: 50px;
 
-    --border-radius: 0px;
+    --border-radius: 10px;
 
     --space-y: 20px;
 
@@ -232,16 +232,16 @@ nav {
     transform: translateX(0);
 }
 
-.main-sudoku-grid {
+.main-crossword-grid {
     display: grid;
     gap: var(--gap);
     grid-template-columns: repeat(auto);
 }
 
 .main-grid-cell {
-    min-height: var(--sudoku-cell-size);
-    min-width: var(--sudoku-cell-size);
-    border-radius: var(--border-radius);
+    min-height: var(--crossword-cell-size);
+    min-width: var(--crossword-cell-size);
+    border-radius: 0px;
     background-color: var(--bg-main);
     color: var(--blue);
     display: grid;
@@ -317,17 +317,18 @@ nav {
     margin-top: var(--space-y);
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 5px;
 }
 
 .word {
-    height: var(--sudoku-cell-size);
-    border-radius: var(--border-radius);
+    height: auto;
+    border-radius: 0px;
     background-color: var(--bg-main);
     color: var(--color-txt);
-    display: grid;
-    place-items: center;
     font-size: var(--font-size);
+    text-align: left;
+    padding: 10px;
 }
 
 .selected {
@@ -338,7 +339,7 @@ nav {
 .delete {
     background-color: var(--red);
     color: var(--white);
-    height: var(--sudoku-cell-size);
+    height: var(--crossword-cell-size);
     border-radius: var(--border-radius);
     display: grid;
     place-items: center;
@@ -433,7 +434,7 @@ nav {
     :root {
         --nav-size: 50px;
 
-        --sudoku-cell-size: 30px;
+        --crossword-cell-size: 30px;
 
         --border-radius: 5px;
 

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- mobile status bar color -->
     <meta name="theme-color" content="#fff">
-    <title>Wordsearch</title>
+    <title>Wordsearch | Generate Puzzles</title>
     <link rel="shortcut icon" href="./static/images/logo.svg" type="image/x-icon">
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +61,9 @@
             <!-- settings screen -->
             <div class="settings-screen" id="settings-screen">
                 <input type="text" id="prompt" placeholder="Topic" />
+                <div class="btn" id="btn-size">
+                    Small
+                </div>
                 <div class="btn" id="btn-level">
                     Easy
                 </div>
@@ -70,7 +73,7 @@
 
             <!-- game screen -->
             <div class="main-game" id="game-screen">
-                <div class="main-sudoku-grid">
+                <div class="main-wordsearch-grid">
                     <!-- dynamically insert cells here -->
                 </div>
 

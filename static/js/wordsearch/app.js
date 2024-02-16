@@ -15,7 +15,7 @@ const game_screen = document.querySelector('#game-screen');
 const pause_screen = document.querySelector('#pause-screen');
 const result_screen = document.querySelector('#result-screen');
 // ----------
-const wordsearch_grid = document.querySelector('.main-sudoku-grid');
+const wordsearch_grid = document.querySelector('.main-wordsearch-grid');
 var cells = document.querySelectorAll('.main-grid-cell');
 
 const number_inputs = document.querySelectorAll('.number');
@@ -27,6 +27,9 @@ const result_time = document.querySelector('#result-time');
 
 const words_list = document.querySelector('#words');
 const words_cell = document.querySelectorAll('.word');
+
+let size_index = 0;
+let size = CONSTANT.SIZE[size_index];
 
 let level_index = 0;
 let level = CONSTANT.LEVEL[level_index];
@@ -61,10 +64,11 @@ function removeAllChildNodes(parent) {
     }
 }
 
-function resetSudoku() {
+function resetWordsearch() {
     removeAllChildNodes(wordsearch_grid);
-    wordsearch_grid.style.gridTemplateColumns = "repeat("+CONSTANT.GRID_SIZE+", auto)";
-    for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
+    wordsearch_grid.style.gridTemplateColumns = "repeat("+size+", auto)";
+    console.log(size);
+    for (let i = 0; i < Math.pow(size, 2); i++) {
         //cells[i].innerHTML = '';
         //cells[i].classList.remove('filled');
         //cells[i].classList.remove('selected');
@@ -121,13 +125,12 @@ const get_words = async (prompt_req) => {
 }
 
 const initWordsearch = async (prompt) => {
-    // clear old sudoku grid and create new
-    resetSudoku();
+    // clear old grid and create new
+    resetWordsearch();
     resetBg();
 
     // get words and clues
-    const grid_size = 10;
-    const prompt_req = `Provide 5 unique words (no spaces or hyphens) that are less than or equal to ${grid_size} characters in length and are related to ${prompt}.`;
+    const prompt_req = `Provide 5 unique words (no spaces or hyphens) that are less than or equal to ${size} characters in length and are related to ${prompt}.`;
     const words = await get_words(prompt_req);
     if (words) {
         // TODO: remove any duplicates from input/OpenAI output
@@ -136,8 +139,8 @@ const initWordsearch = async (prompt) => {
 
         words.forEach((word) => uppercaseWords.push(word.toUpperCase()));
         
-        // generate sudoku puzzle here
-        su = wordsearchGen(uppercaseWords, level);
+        // generate wordsearch puzzle here
+        su = wordsearchGen(uppercaseWords, size, level);
         su_answer = [...su.question];
 
         seconds = 0;
@@ -147,9 +150,9 @@ const initWordsearch = async (prompt) => {
         console.log("Cells", cells)
 
         // show grid to div
-        for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
-            let row = Math.floor(i / CONSTANT.GRID_SIZE);
-            let col = i % CONSTANT.GRID_SIZE;
+        for (let i = 0; i < Math.pow(size, 2); i++) {
+            let row = Math.floor(i / size);
+            let col = i % size;
             
             cells[i].setAttribute('data-value', su.question[row][col]);
 
@@ -170,12 +173,12 @@ const initWordsearch = async (prompt) => {
 }
 
 const loadWordsearch = () => {
-    resetSudoku();
-    resetBg();
-
     let game = getGameInfo();
+    size_index = game.size;
+    size = CONSTANT.SIZE[size_index];
 
-    console.log(game)
+    resetWordsearch();
+    resetBg();
 
     game_level.innerHTML = CONSTANT.LEVEL_NAME[game.level];
 
@@ -190,10 +193,12 @@ const loadWordsearch = () => {
 
     level_index = game.level;
 
+    console.log(cells);
+
     // show grid to div
-    for (let i = 0; i < Math.pow(CONSTANT.GRID_SIZE, 2); i++) {
-        let row = Math.floor(i / CONSTANT.GRID_SIZE);
-        let col = i % CONSTANT.GRID_SIZE;
+    for (let i = 0; i < Math.pow(size, 2); i++) {
+        let row = Math.floor(i / size);
+        let col = i % size;
         console.log({row, col})
         cells[i].setAttribute('data-value', su.question[row][col]);
 
@@ -229,6 +234,7 @@ const removeErr = () => cells.forEach(e => e.classList.remove('err'));
 
 const saveGameInfo = () => {
     let game = {
+        size: size_index,
         level: level_index,
         seconds: seconds,
         su: {
@@ -247,7 +253,7 @@ const removeGameInfo = () => {
     document.querySelector('#btn-continue').style.display = 'none';
 }
 
-const isGameWin = () => sudokuCheck(su_answer);
+const isGameWin = () => wordsearchCheck(su_answer);
 
 const showResult = () => {
     clearInterval(timer);
@@ -257,10 +263,10 @@ const showResult = () => {
 
 function findCell(index)
 {
-    var row = Math.floor( index / CONSTANT.GRID_SIZE );
-    var col = index % CONSTANT.GRID_SIZE;
+    var row = Math.floor( index / size );
+    var col = index % size;
     
-    if (col < 0 || col >= CONSTANT.GRID_SIZE || row < 0 || row >= CONSTANT.GRID_SIZE )
+    if (col < 0 || col >= size || row < 0 || row >= size)
         return null;
 
     return { row : row, col : col };
@@ -268,7 +274,7 @@ function findCell(index)
 
 function findIndex(row, col)
 {
-    return CONSTANT.GRID_SIZE * row + col;
+    return size * row + col;
 }
 
 const findSelection = () => {
@@ -598,6 +604,12 @@ const returnStartScreen = () => {
 }
 
 // add button event
+document.querySelector('#btn-size').addEventListener('click', (e) => {
+    size_index = size_index + 1 > CONSTANT.SIZE.length - 1 ? 0 : size_index + 1;
+    size = CONSTANT.SIZE[size_index];
+    e.target.innerHTML = CONSTANT.SIZE_NAME[size_index];
+});
+
 document.querySelector('#btn-level').addEventListener('click', (e) => {
     level_index = level_index + 1 > CONSTANT.LEVEL.length - 1 ? 0 : level_index + 1;
     level = CONSTANT.LEVEL[level_index];

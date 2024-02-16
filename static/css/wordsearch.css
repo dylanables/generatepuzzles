@@ -11,7 +11,7 @@
     --black: #000;
 
     --nav-size: 70px;
-    --sudoku-cell-size: 50px;
+    --wordsearch-cell-size: 50px;
 
     --border-radius: 10px;
 
@@ -232,15 +232,15 @@ nav {
     transform: translateX(0);
 }
 
-.main-sudoku-grid {
+.main-wordsearch-grid {
     display: grid;
     gap: var(--gap);
     grid-template-columns: repeat(auto);
 }
 
 .main-grid-cell {
-    height: var(--sudoku-cell-size);
-    width: var(--sudoku-cell-size);
+    height: var(--wordsearch-cell-size);
+    width: var(--wordsearch-cell-size);
     border-radius: var(--border-radius);
     background-color: var(--bg-main);
     color: var(--blue);
@@ -321,7 +321,7 @@ nav {
 }
 
 .word {
-    height: var(--sudoku-cell-size);
+    height: var(--wordsearch-cell-size);
     border-radius: var(--border-radius);
     background-color: var(--bg-main);
     color: var(--color-txt);
@@ -333,7 +333,7 @@ nav {
 .delete {
     background-color: var(--red);
     color: var(--white);
-    height: var(--sudoku-cell-size);
+    height: var(--wordsearch-cell-size);
     border-radius: var(--border-radius);
     display: grid;
     place-items: center;
@@ -428,7 +428,7 @@ nav {
     :root {
         --nav-size: 50px;
 
-        --sudoku-cell-size: 30px;
+        --wordsearch-cell-size: 30px;
 
         --border-radius: 5px;
 
