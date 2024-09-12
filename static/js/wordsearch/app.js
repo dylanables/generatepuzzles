@@ -81,7 +81,7 @@ function resetWordsearch() {
 }
 
 const get_words = async (prompt_req) => {
-    const apiKey = "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";
+    const apiKey = "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";
     console.log(prompt_req)
 
     try {
