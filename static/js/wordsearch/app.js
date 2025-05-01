@@ -2,8 +2,8 @@ document.querySelector('#dark-mode-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
     const isDarkMode = document.body.classList.contains('dark');
     localStorage.setItem('darkmode', isDarkMode);
-    // chang mobile status bar color
-    document.querySelector('meta[name="theme-color"').setAttribute('content', isDarkMode ? '#1a1a2e' : '#fff');
+    // change mobile status bar color
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', isDarkMode ? '#1a1a2e' : '#fff');
 });
 
 // initial value
@@ -81,47 +81,53 @@ function resetWordsearch() {
 }
 
 const get_words = async (prompt_req) => {
-    const apiKey = "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";
-    console.log(prompt_req)
+    console.log("Requesting words for:", prompt_req)
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            response_format: { type: "json_object" },
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'gpt-3.5-turbo-1106',
-                messages: [
-                    { role: "system", content: "You are a helpful assistant designed to output words for a wordsearch puzzle in JSON. Create a valid json array containing the words as strings" },
-                    { role: "user", content: prompt_req },
-                ],
-                max_tokens: 500,
-            }),
-        });
+        const response = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt_req }),
+        })
 
-        const responseText = await response.text();
-        console.log(responseText)
+        console.log("Response status:", response.status)
 
-        const responseData = JSON.parse(responseText).choices[0].message.content;
-        console.log(responseData)
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Server error", errorText);
+            throw new Error(`Server responded with status: ${response.status}`)
+        }
 
-        const data = responseData.substring(responseData.indexOf('['), responseData.lastIndexOf(']') + 1);
-        console.log(data)
+        const data = await response.json()
+        console.log("API response:", data)
 
-        const words_res = JSON.parse(data);
-        console.log(words_res)
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+        const responseData = data.choices[0].message.content
+        console.log("Response content:", responseData)
 
-        return words_res;
+        // Extract the JSON array from the response
+        const jsonStart = responseData.indexOf("[")
+        const jsonEnd = responseData.lastIndexOf("]") + 1
 
+        if (jsonStart === -1 || jsonEnd === -1) {
+            throw new Error("Could not find valid JSON array in response")
+        }
+
+        const jsonStr = responseData.substring(jsonStart, jsonEnd)
+        console.log("Extracted JSON:", jsonStr)
+
+        const words_res = JSON.parse(jsonStr)
+        console.log("Parsed words:", words_res)
+
+        return words_res
+        } else {
+        throw new Error("Invalid response format from API")
+        }
     } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while generating the puzzle. Please try again.');
+        console.error("Error:", error)
+        alert("An error occurred while generating the puzzle. Please try again.")
+        return null
     }
-
-    return null;
 }
 
 const initWordsearch = async (prompt) => {
