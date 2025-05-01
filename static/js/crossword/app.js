@@ -29,9 +29,8 @@ const words_list = document.querySelector('.words');
 const words_list_across = document.querySelector('.words-across');
 const words_list_down = document.querySelector('.words-down');
 var words_cell = document.querySelectorAll('.word');
+
 // TODO: remove any duplicates from input/OpenAI output
-//const words = ['BARKING', 'FETCH', 'TAILWAG', 'PAWPRINT', 'PUPPY', 'WOOFING', 'LEASH', 'HOUND', 'BONE', 'LOYAL'];
-const words = ['BARKING', 'FETCH', 'TAILWAG'];
 
 let level_index = 0;
 let level = CONSTANT.LEVEL[level_index];
@@ -84,26 +83,22 @@ function resetCrossword() {
 }
 
 const get_words_and_clues = async (prompt_req) => {
-    const apiKey = "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";
-    console.log(prompt_req)
+    console.log("Requesting words for:", prompt_req)
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            response_format: { type: "json_object" },
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'gpt-3.5-turbo-1106',
-                messages: [
-                    { role: "system", content: "You are a helpful assistant designed to output words and corresponding clues for a crossword puzzle in JSON. Create a valid json array of arrays containing the word and clue as strings, use 'words' as the key name" },
-                    { role: "user", content: prompt_req },
-                ],
-                max_tokens: 500,
-            }),
-        });
+        const response = await fetch("https://generate-puzzles.onrender.com/crossword", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt_req }),
+        })
+
+        console.log("Response status:", response.status)
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Server error", errorText);
+            throw new Error(`Server responded with status: ${response.status}`)
+        }
 
         const responseText = await response.text();
 

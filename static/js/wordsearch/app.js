@@ -84,7 +84,7 @@ const get_words = async (prompt_req) => {
     console.log("Requesting words for:", prompt_req)
 
     try {
-        const response = await fetch("/generate", {
+        const response = await fetch("https://generate-puzzles.onrender.com/wordsearch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: prompt_req }),
