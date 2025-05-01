@@ -98,31 +98,19 @@ const get_words = async (prompt_req) => {
             throw new Error(`Server responded with status: ${response.status}`)
         }
 
-        const data = await response.json()
-        console.log("API response:", data)
+        const responseText = await response.text();
+        console.log(responseText)
 
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-        const responseData = data.choices[0].message.content
-        console.log("Response content:", responseData)
+        const responseData = JSON.parse(responseText).choices[0].message.content;
+        console.log(responseData)
 
-        // Extract the JSON array from the response
-        const jsonStart = responseData.indexOf("[")
-        const jsonEnd = responseData.lastIndexOf("]") + 1
+        const data = responseData.substring(responseData.indexOf('['), responseData.lastIndexOf(']') + 1);
+        console.log(data)
 
-        if (jsonStart === -1 || jsonEnd === -1) {
-            throw new Error("Could not find valid JSON array in response")
-        }
+        const words_res = JSON.parse(data);
+        console.log(words_res)
 
-        const jsonStr = responseData.substring(jsonStart, jsonEnd)
-        console.log("Extracted JSON:", jsonStr)
-
-        const words_res = JSON.parse(jsonStr)
-        console.log("Parsed words:", words_res)
-
-        return words_res
-        } else {
-        throw new Error("Invalid response format from API")
-        }
+        return words_res;
     } catch (error) {
         console.error("Error:", error)
         alert("An error occurred while generating the puzzle. Please try again.")
