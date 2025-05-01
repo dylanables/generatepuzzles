@@ -123,7 +123,7 @@ nav {
 
 .screen {
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
     height: 100% !important;
     min-width: 400px;
 }

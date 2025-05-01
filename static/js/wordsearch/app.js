@@ -28,7 +28,7 @@ const result_time = document.querySelector('#result-time');
 const words_list = document.querySelector('#words');
 const words_cell = document.querySelectorAll('.word');
 
-let size_index = 0;
+let size_index = 1;
 let size = CONSTANT.SIZE[size_index];
 
 let level_index = 0;

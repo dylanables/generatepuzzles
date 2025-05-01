@@ -57,6 +57,10 @@ input:focus {
     border-color: var(--blue);
 }
 
+#prompt::placeholder {
+    text-align: center;
+}
+
 a {
     text-decoration: none;
     color: unset;
